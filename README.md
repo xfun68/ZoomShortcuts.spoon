@@ -17,7 +17,7 @@
 1. 安装 [Homebrew](https://brew.sh/)：`/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`
 1. 安装 [Hammerspoon](https://www.hammerspoon.org/)：`brew install hammerspoon`
 1. 配置 Hammerspoon：`mkdir -p ~/.hammerspoon/Spoons && touch ~/.hammerspoon/init.lua`
-1. 运行 Hammerspoon，可能需要进行 Privacy 设置，请参考：![privacy-setting](/images/privacy-setting.jpg)
+1. 运行 Hammerspoon（需要进行 Privacy 设置，请参考下图）![privacy-setting](/images/privacy-setting.jpg)
 1. 下载 ZoomShortcuts Spoon：`git clone git@github.com:xfun68/ZoomShortcuts.spoon.git ~/.hammerspoon/Spoons/ZoomShortcuts.spoon`
 1. 配置 ZoomShortcuts Spoon：`/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/xfun68/Zoomshortcuts.spoon/master/scripts/config.sh)`
 
