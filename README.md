@@ -19,7 +19,7 @@
 1. 配置 Hammerspoon：`mkdir -p ~/.hammerspoon/Spoons && touch ~/.hammerspoon/init.lua`
 1. 运行 Hammerspoon（需要进行 Privacy 设置，请参考下图）![privacy-setting](/images/privacy-setting.jpg)
 1. 下载 ZoomShortcuts Spoon：`git clone git@github.com:xfun68/ZoomShortcuts.spoon.git ~/.hammerspoon/Spoons/ZoomShortcuts.spoon`
-1. 配置 ZoomShortcuts Spoon：`/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/xfun68/Zoomshortcuts.spoon/master/scripts/config.sh)`
+1. 配置 ZoomShortcuts Spoon：`/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/xfun68/Zoomshortcuts.spoon/master/scripts/config.sh)"`
 
 ## 如何自定义快捷键
 
