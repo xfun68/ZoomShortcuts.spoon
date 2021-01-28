@@ -2,7 +2,7 @@
 ---
 --- Give you an chance to customize shortcuts for Zoom Annotate related operations.
 ---
---- XXXXXXXXXXXXXXXXXXXXX using git clone
+--- git clone git@github.com:xfun68/ZoomShortcuts.spoon.git ~/.hammerspoon/Spoons/ZoomShortcuts.spoon
 
 local obj = {}
 obj.__index = obj
