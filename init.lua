@@ -19,6 +19,8 @@ local zoomShareToolbarWindowTitle = 'zoom share toolbar window'
 local zoomAnnotationPanelTitle = 'annotation panel'
 local zoomAnnotationToolbarPopupMenuTitle = 'annotation toolbar popup menu'
 
+local _zsZoomApp = nil
+
 -- _zsLog = hs.logger.new('ZoomShortcuts','info')
 
 local function listPrint(list)
@@ -154,7 +156,10 @@ local function zoomExecuteOperations(name, operations)
 end
 
 local function findZoomApplication()
-    return hs.application.find(zoomAppName)
+    if not _zsZoomApp then
+        error('Zoom Application is not running or cannot be found by name "'..zoomAppName..'"!')
+    end
+    return _zsZoomApp
 end
 
 local function zoomFindShareToolbar()
@@ -269,6 +274,28 @@ local zoomOpShareToolbarClickAnnotate = {name = 'ShareToolbar: click Annotate', 
 local zoomOpAnnotatePanelClickClear = {name = 'AnnotatePanel: click Clear', action = zoomAnnotatePanelClickClear, predicate = zoomFindAnnotatePopupMenu}
 local zoomOpAnnotatePanelClickSave = {name = 'AnnotatePanel: click Save', action = zoomAnnotatePanelClickSave}
 local zoomOpAnnotatePopupMenuSelectClearAllDrawings = {name = 'AnnotatePopupMenu: select Clear All Drawings', action = zoomAnnotatePopupMenuClickClearAllDrawings}
+
+local _zsZoomAppWatcher = nil
+
+function obj:init()
+    _zsZoomApp = hs.application.find(zoomAppName)
+
+    _zsZoomAppWatcher = hs.application.watcher.new(function (name, eventType, app)
+        if eventType == hs.application.watcher.launched then
+            _zsZoomApp = app
+        elseif eventType == hs.application.watcher.terminated then
+            _zsZoomApp = nil
+        end
+    end)
+end
+
+function obj:start()
+    _zsZoomAppWatcher:start()
+end
+
+function obj:stop()
+    _zsZoomAppWatcher:stop()
+end
 
 function obj:zoomAnnotateToggle()
     zoomExecuteOperations('Zoom Toggle Annotate',
