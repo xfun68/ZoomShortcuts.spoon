@@ -123,15 +123,15 @@ local function execOperationAsync(operations, index)
     end)
 end
 
+_zsOriginalMousePoint = hs.mouse.getAbsolutePosition()
+
 local function zoomExecuteOperations(name, operations)
     operations = operations or {}
 
-    local originalFocusedWindow = hs.application.frontmostApplication():focusedWindow()
-    local originalMousePoint = hs.mouse.getAbsolutePosition()
+    _zsOriginalMousePoint = hs.mouse.getAbsolutePosition()
 
     local function restore()
-        originalFocusedWindow:focus()
-        hs.mouse.setAbsolutePosition(originalMousePoint)
+        hs.mouse.setAbsolutePosition(_zsOriginalMousePoint)
     end
 
     local function showStartedAlert()
