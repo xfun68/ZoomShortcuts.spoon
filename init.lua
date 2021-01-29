@@ -117,7 +117,7 @@ local function execOperationAsync(operations, index)
     end)
 end
 
-_zsOriginalMousePoint = hs.mouse.getAbsolutePosition()
+local _zsOriginalMousePoint = hs.mouse.getAbsolutePosition()
 
 local function zoomExecuteOperations(name, operations)
     operations = operations or {}
