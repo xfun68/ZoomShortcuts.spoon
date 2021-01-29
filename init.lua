@@ -19,8 +19,6 @@ local zoomShareToolbarWindowTitle = 'zoom share toolbar window'
 local zoomAnnotationPanelTitle = 'annotation panel'
 local zoomAnnotationToolbarPopupMenuTitle = 'annotation toolbar popup menu'
 
-zoomClickDelay = 50
-
 -- _zsLog = hs.logger.new('ZoomShortcuts','info')
 
 local function listPrint(list)
