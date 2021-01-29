@@ -178,8 +178,14 @@ local function zoomFindAnnotatePopupMenu()
 end
 
 local function zoomShowAnnotateStatus()
-    local status = zoomFindAnnotatePanel() and "ON" or "OFF"
-    hs.alert("Zoom Annotate: "..status, {fillColor = hs.drawing.color.definedCollections.hammerspoon})
+    local hsColorCollection = hs.drawing.color.definedCollections.hammerspoon
+    local status = 'OFF'
+    local fillColor = hsColorCollection.osx_red
+    if zoomFindAnnotatePanel() then
+        status = 'ON'
+        fillColor = hsColorCollection.osx_green
+    end
+    hs.alert('Zoom Annotate: '..status, {fillColor = fillColor}, 0.7)
 end
 
 local function zoomShareToolbarClickAnnotate()
