@@ -64,16 +64,14 @@ end
 local function isTimerRunningFn(timer, target)
     return function()
         local isRunning = timer:running()
-        _zsLog.v('timer for "'..target..'" is: '..(isRunning and 'RUNNING' or 'STOPPED'))
-        _zsLog.v(timer)
+        _zsLog.v('timer for "'..target..'" is: '..hs.inspect(timer))
         return isRunning
     end
 end
 
 local function stopTimerFn(timer, target)
     return function()
-        _zsLog.e('stop timer for waiting "'..target..'"')
-        _zsLog.e(timer)
+        _zsLog.e('stop timer for "'..target..'": '..hs.inspect(timer))
         timer:stop()
     end
 end
@@ -95,7 +93,7 @@ local function clickPoints(points, options)
             hs.timer.usleep(interval)
         end
         clickPoint(point)
-        _zsLog.d('Clicked point['..i..']')
+        _zsLog.d('Clicked point['..i..']: '..hs.inspect(point))
     end
 end
 
@@ -114,7 +112,7 @@ local function execOperationAsync(operations, index)
         function () execOperationAsync(operations, index + 1) end,
         0.1)
 
-    _zsLog.v(timer)
+    _zsLog.v('start new timer for "'..operationName..'": '..hs.inspect(timer))
 
     hs.timer.doAfter(5, function()
         hs.timer.doWhile(isTimerRunningFn(timer, operationName), stopTimerFn(timer, operationName))
