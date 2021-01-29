@@ -21,7 +21,7 @@ local zoomAnnotationToolbarPopupMenuTitle = 'annotation toolbar popup menu'
 
 zoomClickDelay = 50
 
-_zsLog = hs.logger.new('ZoomShortcuts','info')
+-- _zsLog = hs.logger.new('ZoomShortcuts','info')
 
 local function listPrint(list)
     list = list or {}
@@ -64,14 +64,14 @@ end
 local function isTimerRunningFn(timer, target)
     return function()
         local isRunning = timer:running()
-        _zsLog.v('timer for "'..target..'" is: '..hs.inspect(timer))
+        -- _zsLog.v('timer for "'..target..'" is: '..hs.inspect(timer))
         return isRunning
     end
 end
 
 local function stopTimerFn(timer, target)
     return function()
-        _zsLog.e('stop timer for "'..target..'": '..hs.inspect(timer))
+        -- _zsLog.e('stop timer for "'..target..'": '..hs.inspect(timer))
         timer:stop()
     end
 end
@@ -89,18 +89,18 @@ local function clickPoints(points, options)
 
     for i, point in pairs(points) do
         if i > 1 then
-            _zsLog.d('Sleep click interval: '..interval)
+            -- _zsLog.d('Sleep click interval: '..interval)
             hs.timer.usleep(interval)
         end
         clickPoint(point)
-        _zsLog.d('Clicked point['..i..']: '..hs.inspect(point))
+        -- _zsLog.d('Clicked point['..i..']: '..hs.inspect(point))
     end
 end
 
 local function execOperationAsync(operations, index)
     index = index or 1
     local operationName = operations[index].name
-    _zsLog.d('execute operations['..index..']: '..operationName)
+    -- _zsLog.d('execute operations['..index..']: '..operationName)
     operations[index].action()
 
     if index == #operations then
@@ -112,7 +112,7 @@ local function execOperationAsync(operations, index)
         function () execOperationAsync(operations, index + 1) end,
         0.1)
 
-    _zsLog.v('start new timer for "'..operationName..'": '..hs.inspect(timer))
+    -- _zsLog.v('start new timer for "'..operationName..'": '..hs.inspect(timer))
 
     hs.timer.doAfter(5, function()
         hs.timer.doWhile(isTimerRunningFn(timer, operationName), stopTimerFn(timer, operationName))
@@ -149,7 +149,7 @@ local function zoomExecuteOperations(name, operations)
     -- listPush(extendedOperations, opShowDoneAlert)
 
     for i = 1, #extendedOperations do
-        _zsLog.d('operations['..i..']: '..extendedOperations[i].name)
+        -- _zsLog.d('operations['..i..']: '..extendedOperations[i].name)
     end
 
     execOperationAsync(extendedOperations)
@@ -160,23 +160,23 @@ local function findZoomApplication()
 end
 
 local function zoomFindShareToolbar()
-    _zsLog.d('Find window "'..zoomShareToolbarWindowTitle..'"')
+    -- _zsLog.d('Find window "'..zoomShareToolbarWindowTitle..'"')
     local win = findZoomApplication():findWindow(zoomShareToolbarWindowTitle)
-    _zsLog.d(win)
+    -- _zsLog.d(win)
     return win
 end
 
 local function zoomFindAnnotatePanel()
-    _zsLog.d('Find window "'..zoomAnnotationPanelTitle..'"')
+    -- _zsLog.d('Find window "'..zoomAnnotationPanelTitle..'"')
     local win = findZoomApplication():findWindow(zoomAnnotationPanelTitle)
-    _zsLog.d(win)
+    -- _zsLog.d(win)
     return win
 end
 
 local function zoomFindAnnotatePopupMenu()
-    _zsLog.d('Find window "'..zoomAnnotationToolbarPopupMenuTitle..'"')
+    -- _zsLog.d('Find window "'..zoomAnnotationToolbarPopupMenuTitle..'"')
     local win = findZoomApplication():findWindow(zoomAnnotationToolbarPopupMenuTitle)
-    _zsLog.d(win)
+    -- _zsLog.d(win)
     return win
 end
 
