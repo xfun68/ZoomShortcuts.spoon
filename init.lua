@@ -64,8 +64,8 @@ end
 local function isTimerRunningFn(timer, target)
     return function()
         local isRunning = timer:running()
-        zlog.d('timer for "'..target..'" is: '..(isRunning and 'RUNNING' or 'STOPPED'))
-        zlog.d(timer)
+        zlog.v('timer for "'..target..'" is: '..(isRunning and 'RUNNING' or 'STOPPED'))
+        zlog.v(timer)
         return isRunning
     end
 end
@@ -114,11 +114,9 @@ local function execOperationAsync(operations, index)
         function () execOperationAsync(operations, index + 1) end,
         0.1)
 
-    zlog.d(timer)
+    zlog.v(timer)
 
-    hs.timer.doAfter(2, function()
-        zlog.d('stop timer for: ' .. operationName)
-        zlog.d(timer)
+    hs.timer.doAfter(5, function()
         hs.timer.doWhile(isTimerRunningFn(timer, operationName), stopTimerFn(timer, operationName))
     end)
 end
