@@ -218,7 +218,7 @@ local function zoomRestoreAnnoatePanelFn(isAnnotateOriginalyOn)
 end
 
 local function zoomAnnotatePanelClickClear()
-    local clearOffset = { x = 590, y = 30 }
+    local clearOffset = { x = -90, y = 30 }
     clickPoint(pointFromOffset(zoomFindAnnotatePanel():frame(), clearOffset))
 end
 
