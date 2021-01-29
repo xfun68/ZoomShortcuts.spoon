@@ -19,9 +19,12 @@ local zoomShareToolbarWindowTitle = 'zoom share toolbar window'
 local zoomAnnotationPanelTitle = 'annotation panel'
 local zoomAnnotationToolbarPopupMenuTitle = 'annotation toolbar popup menu'
 
-local _zsZoomApp = nil
+_zsZoomApp = nil
+_zsShareToolbarWindow = nil
+_zsAnnotationPannelWindow = nil
+_zsAnnotationToolbarPopupMenuWindow = nil
 
--- _zsLog = hs.logger.new('ZoomShortcuts','info')
+-- _zsLog = hs.logger.new('ZoomShortcuts','debug')
 
 local function listPrint(list)
     list = list or {}
@@ -163,29 +166,20 @@ local function findZoomApplication()
 end
 
 local function zoomFindShareToolbar()
-    -- _zsLog.d('Find window "'..zoomShareToolbarWindowTitle..'"')
-    local win = findZoomApplication():findWindow(zoomShareToolbarWindowTitle)
-    -- _zsLog.d(win)
-    return win
+    return _zsShareToolbarWindow
 end
 
 local function zoomFindAnnotatePanel()
-    -- _zsLog.d('Find window "'..zoomAnnotationPanelTitle..'"')
-    local win = findZoomApplication():findWindow(zoomAnnotationPanelTitle)
-    -- _zsLog.d(win)
-    return win
+    return _zsAnnotationPannelWindow
 end
 
 local function zoomFindAnnotatePopupMenu()
-    -- _zsLog.d('Find window "'..zoomAnnotationToolbarPopupMenuTitle..'"')
-    local win = findZoomApplication():findWindow(zoomAnnotationToolbarPopupMenuTitle)
-    -- _zsLog.d(win)
-    return win
+    return _zsAnnotationToolbarPopupMenuWindow
 end
 
 local function zoomShowAnnotateStatus()
     local status = zoomFindAnnotatePanel() and "ON" or "OFF"
-    hs.alert("Zoom annotate: "..status)
+    hs.alert("Zoom Annotate: "..status, {fillColor = hs.drawing.color.definedCollections.hammerspoon})
 end
 
 local function zoomShareToolbarClickAnnotate()
@@ -280,6 +274,12 @@ local _zsZoomAppWatcher = nil
 function obj:init()
     _zsZoomApp = hs.application.find(zoomAppName)
 
+    if _zsZoomApp then
+        _zsShareToolbarWindow = findZoomApplication():findWindow(zoomShareToolbarWindowTitle)
+        _zsAnnotationPannelWindow = findZoomApplication():findWindow(zoomAnnotationPanelTitle)
+        _zsAnnotationToolbarPopupMenuWindow = findZoomApplication():findWindow(zoomAnnotationToolbarPopupMenuTitle)
+    end
+
     _zsZoomAppWatcher = hs.application.watcher.new(function (name, eventType, app)
         if eventType == hs.application.watcher.launched then
             _zsZoomApp = app
@@ -287,14 +287,49 @@ function obj:init()
             _zsZoomApp = nil
         end
     end)
+
+    _zsWindowFilter = hs.window.filter.new(function (window)
+        return window:title() == zoomShareToolbarWindowTitle or window:title() == zoomAnnotationPanelTitle or window:title() == zoomAnnotationToolbarPopupMenuTitle
+    end)
 end
 
 function obj:start()
     _zsZoomAppWatcher:start()
+
+    local function bindWindow(window, appName)
+        if window:title() == zoomShareToolbarWindowTitle then
+            _zsShareToolbarWindow = window
+        end
+        if window:title() == zoomAnnotationPanelTitle then
+            _zsAnnotationPannelWindow = window
+        end
+        if window:title() == zoomAnnotationToolbarPopupMenuTitle then
+            _zsAnnotationToolbarPopupMenuWindow = window
+        end
+    end
+
+    local function unbindWindow(window, appName)
+        if _zsShareToolbarWindow and _zsShareToolbarWindow:id() == window:id() then
+            _zsShareToolbarWindow = nil
+        end
+        if _zsAnnotationPannelWindow and (_zsAnnotationPannelWindow:id() == window:id()) then
+            _zsAnnotationPannelWindow = nil
+        end
+        if _zsAnnotationToolbarPopupMenuWindow and (_zsAnnotationToolbarPopupMenuWindow:id() == window:id()) then
+            _zsAnnotationToolbarPopupMenuWindow = nil
+        end
+    end
+
+    _zsWindowFilter:subscribe(hs.window.filter.windowCreated, bindWindow)
+    _zsWindowFilter:subscribe(hs.window.filter.windowDestroyed, unbindWindow)
 end
 
 function obj:stop()
     _zsZoomAppWatcher:stop()
+    _zsWindowFilter:unsubscribe({
+        hs.window.filter.windowCreated,
+        hs.window.filter.windowDestroyed
+    })
 end
 
 function obj:zoomAnnotateToggle()
