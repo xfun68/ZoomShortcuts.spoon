@@ -183,7 +183,7 @@ local function zoomFindAnnotatePopupMenu()
 end
 
 local function zoomShowAnnotateStatus()
-    local status = hs.window(zoomAnnotationPanelTitle) and "ON" or "OFF"
+    local status = zoomFindAnnotatePanel() and "ON" or "OFF"
     hs.alert("Zoom annotate: "..status)
 end
 
