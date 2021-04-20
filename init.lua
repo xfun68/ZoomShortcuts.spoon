@@ -104,7 +104,10 @@ local function execOperationAsync(operations, index)
     index = index or 1
     local operationName = operations[index].name
     -- _zsLog.d('execute operations['..index..']: '..operationName)
-    operations[index].action()
+
+    if not operations[index].precondition or operations[index].precondition() then
+        operations[index].action()
+    end
 
     if index == #operations then
         return
@@ -173,6 +176,14 @@ local function zoomFindAnnotatePanel()
     return _zsAnnotationPannelWindow
 end
 
+local function zoomAnnotatePanelIsOn()
+    return _zsAnnotationPannelWindow
+end
+
+local function zoomAnnotatePanelIsOff()
+    return not _zsAnnotationPannelWindow
+end
+
 local function zoomFindAnnotatePopupMenu()
     return _zsAnnotationToolbarPopupMenuWindow
 end
@@ -191,20 +202,6 @@ end
 local function zoomShareToolbarClickAnnotate()
     local annotateOffset = { x = -128, y = 30 }
     clickPoint(pointFromOffset(zoomFindShareToolbar():frame(), annotateOffset))
-end
-
-local function zoomEnsureAnnotatePanelOpen()
-    if zoomFindAnnotatePanel() then
-        return
-    end
-    zoomShareToolbarClickAnnotate()
-end
-
-local function zoomEnsureAnnotatePanelClosed()
-    if not zoomFindAnnotatePanel() then
-        return
-    end
-    zoomShareToolbarClickAnnotate()
 end
 
 local function zoomShareToolbarClickAnnotateFn(isAnnotateOriginalyOn)
@@ -274,13 +271,15 @@ local zoomOpShowAnnotateStatus = {
 
 local zoomOpEnsureAnnotatePanelOpen = {
     name = 'ShareToolbar: ensure annotate panel open',
-    action = zoomEnsureAnnotatePanelOpen,
+    precondition = zoomAnnotatePanelIsOff,
+    action = zoomShareToolbarClickAnnotate,
     predicate = zoomFindAnnotatePanel
 }
 
 local zoomOpEnsureAnnotatePanelClosed = {
     name = 'ShareToolbar: ensure annotate panel closed',
-    action = zoomEnsureAnnotatePanelClosed,
+    precondition = zoomAnnotatePanelIsOn,
+    action = zoomShareToolbarClickAnnotate,
     predicate = function () return not zoomFindAnnotatePanel() end
 }
 
