@@ -267,13 +267,43 @@ local function zoomAssertInSharingAndThen(operations)
     return wrappedOps
 end
 
-local zoomOpShowAnnotateStatus = {name = 'Zoom: show Annotate status', action = zoomShowAnnotateStatus}
-local zoomOpEnsureAnnotatePanelOpen = {name = 'ShareToolbar: ensure annotate panel open', action = zoomEnsureAnnotatePanelOpen, predicate = zoomFindAnnotatePanel}
-local zoomOpEnsureAnnotatePanelClosed = {name = 'ShareToolbar: ensure annotate panel closed', action = zoomEnsureAnnotatePanelClosed, predicate = function () return not zoomFindAnnotatePanel() end}
-local zoomOpShareToolbarClickAnnotate = {name = 'ShareToolbar: click Annotate', action = zoomShareToolbarClickAnnotate}
-local zoomOpAnnotatePanelClickClear = {name = 'AnnotatePanel: click Clear', action = zoomAnnotatePanelClickClear, predicate = zoomFindAnnotatePopupMenu}
-local zoomOpAnnotatePanelClickSave = {name = 'AnnotatePanel: click Save', action = zoomAnnotatePanelClickSave}
-local zoomOpAnnotatePopupMenuSelectClearAllDrawings = {name = 'AnnotatePopupMenu: select Clear All Drawings', action = zoomAnnotatePopupMenuClickClearAllDrawings}
+local zoomOpShowAnnotateStatus = {
+    name = 'Zoom: show Annotate status',
+    action = zoomShowAnnotateStatus
+}
+
+local zoomOpEnsureAnnotatePanelOpen = {
+    name = 'ShareToolbar: ensure annotate panel open',
+    action = zoomEnsureAnnotatePanelOpen,
+    predicate = zoomFindAnnotatePanel
+}
+
+local zoomOpEnsureAnnotatePanelClosed = {
+    name = 'ShareToolbar: ensure annotate panel closed',
+    action = zoomEnsureAnnotatePanelClosed,
+    predicate = function () return not zoomFindAnnotatePanel() end
+}
+
+local zoomOpShareToolbarClickAnnotate = {
+    name = 'ShareToolbar: click Annotate',
+    action = zoomShareToolbarClickAnnotate
+}
+
+local zoomOpAnnotatePanelClickClear = {
+    name = 'AnnotatePanel: click Clear',
+    action = zoomAnnotatePanelClickClear,
+    predicate = zoomFindAnnotatePopupMenu
+}
+
+local zoomOpAnnotatePanelClickSave = {
+    name = 'AnnotatePanel: click Save',
+    action = zoomAnnotatePanelClickSave
+}
+
+local zoomOpAnnotatePopupMenuSelectClearAllDrawings = {
+    name = 'AnnotatePopupMenu: select Clear All Drawings',
+    action = zoomAnnotatePopupMenuClickClearAllDrawings
+}
 
 local _zsZoomAppWatcher = nil
 
