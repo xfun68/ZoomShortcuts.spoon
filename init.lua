@@ -372,9 +372,9 @@ function obj:init()
     _zsZoomApp = hs.application.find(zoomAppName)
 
     if _zsZoomApp then
-        _zsShareToolbarWindow = findZoomApplication():findWindow(zoomShareToolbarWindowTitle)
-        _zsAnnotationPannelWindow = findZoomApplication():findWindow(zoomAnnotationPanelTitle)
-        _zsAnnotationToolbarPopupMenuWindow = findZoomApplication():findWindow(zoomAnnotationToolbarPopupMenuTitle)
+        for key, window in pairs(_zsZoomApp:allWindows()) do
+            bindWindow(window, zoomAppName)
+        end
     end
 
     _zsZoomAppWatcher = hs.application.watcher.new(function (name, eventType, app)
