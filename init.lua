@@ -240,7 +240,7 @@ local function zoomAnnotatePanelClickClear()
 end
 
 local function zoomAnnotatePanelClickSave()
-    local saveOffset = { x = 640, y = 30 }
+    local saveOffset = { x = -40, y = 30 }
     clickPoint(pointFromOffset(zoomFindAnnotatePanel():frame(), saveOffset))
 end
 
