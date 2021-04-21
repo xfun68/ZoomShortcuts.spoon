@@ -253,6 +253,12 @@ local function withPrecondition(precondition, operations)
     return operations
 end
 
+local function wrapWithConditions(precondition, operations, postcondition)
+    operations[1].precondition = precondition
+    operations[#operations].predicate = postcondition
+    return operations
+end
+
 local zoomOpShowAnnotateStatus = {
     name = 'Zoom: show Annotate status',
     action = zoomShowAnnotateStatus
@@ -261,25 +267,6 @@ local zoomOpShowAnnotateStatus = {
 local zoomOpAssertInSharing = {
     name = 'ShareToolbar: assert present',
     action = zoomAssertInSharing
-}
-
-local zoomOpEnsureAnnotatePanelOpen = {
-    name = 'ShareToolbar: ensure annotate panel open',
-    precondition = zoomAnnotatePanelIsOff,
-    action = zoomShareToolbarClickAnnotate,
-    predicate = zoomAnnotatePanelIsOn
-}
-
-local zoomOpEnsureAnnotatePanelClosed = {
-    name = 'ShareToolbar: ensure annotate panel closed',
-    precondition = zoomAnnotatePanelIsOn,
-    action = zoomShareToolbarClickAnnotate,
-    predicate = zoomAnnotatePanelIsOff
-}
-
-local zoomOpShareToolbarClickAnnotate = {
-    name = 'ShareToolbar: click Annotate',
-    action = zoomShareToolbarClickAnnotate
 }
 
 local zoomOpAnnotatePanelClickClear = {
@@ -297,6 +284,30 @@ local zoomOpAnnotatePopupMenuSelectClearAllDrawings = {
     name = 'AnnotatePopupMenu: select Clear All Drawings',
     action = zoomAnnotatePopupMenuClickClearAllDrawings
 }
+
+local function opsToClickAnnotateButton()
+    local operation = {
+        name = 'ShareToolbar: click Annotate',
+        action = zoomShareToolbarClickAnnotate
+    }
+    return { operation }
+end
+
+local function opsToEnsureAnnotatePanelOpen()
+    return wrapWithConditions(
+        zoomAnnotatePanelIsOff,
+        opsToClickAnnotateButton(),
+        zoomAnnotatePanelIsOn
+    )
+end
+
+local function opsToEnsureAnnotatePanelClosed()
+    return wrapWithConditions(
+        zoomAnnotatePanelIsOn,
+        opsToClickAnnotateButton(),
+        zoomAnnotatePanelIsOff
+    )
+end
 
 local _zsZoomAppWatcher = nil
 
@@ -363,43 +374,43 @@ end
 
 function obj:zoomAnnotateToggle()
     local operations = { zoomOpAssertInSharing }
-    listPushAll(operations, { zoomOpShareToolbarClickAnnotate })
+    listPushAll(operations, opsToClickAnnotateButton())
     listPushAll(operations, { zoomOpShowAnnotateStatus })
     zoomExecuteOperations('Zoom Toggle Annotate', operations)
 end
 
 function obj:zoomAnnotateTurnOn()
     local operations = { zoomOpAssertInSharing }
-    listPushAll(operations, { zoomOpEnsureAnnotatePanelOpen })
+    listPushAll(operations, opsToEnsureAnnotatePanelOpen())
     listPushAll(operations, { zoomOpShowAnnotateStatus })
     zoomExecuteOperations('Zoom Turn On Annotate', operations)
 end
 
 function obj:zoomAnnotateTurnOff()
     local operations = { zoomOpAssertInSharing }
-    listPushAll(operations, { zoomOpEnsureAnnotatePanelClosed })
+    listPushAll(operations, opsToEnsureAnnotatePanelClosed())
     listPushAll(operations, { zoomOpShowAnnotateStatus })
     zoomExecuteOperations('Zoom Turn Off Annotate', operations)
 end
 
 function obj:zoomAnnotateClearAllDrawings()
     local operations = { zoomOpAssertInSharing }
-    listPushAll(operations, { zoomOpEnsureAnnotatePanelOpen })
+    listPushAll(operations, opsToEnsureAnnotatePanelOpen())
     listPushAll(operations, { zoomOpAnnotatePanelClickClear })
     listPushAll(operations, { zoomOpAnnotatePopupMenuSelectClearAllDrawings })
     listPushAll(operations, withPrecondition(
         needToRestoreAnnotatePanelFn(zoomFindAnnotatePanel()),
-        { zoomOpShareToolbarClickAnnotate }))
+        opsToClickAnnotateButton()))
     zoomExecuteOperations('Zoom ClearAllDrawings', operations)
 end
 
 function obj:zoomAnnotateSave()
     local operations = { zoomOpAssertInSharing }
-    listPushAll(operations, { zoomOpEnsureAnnotatePanelOpen })
+    listPushAll(operations, opsToEnsureAnnotatePanelOpen())
     listPushAll(operations, { zoomOpAnnotatePanelClickSave })
     listPushAll(operations, withPrecondition(
         needToRestoreAnnotatePanelFn(zoomFindAnnotatePanel()),
-        { zoomOpShareToolbarClickAnnotate }))
+        opsToClickAnnotateButton()))
     zoomExecuteOperations('Zoom Save Annotate', operations)
 end
 
