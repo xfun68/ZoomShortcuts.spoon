@@ -168,10 +168,6 @@ local function findZoomApplication()
     return _zsZoomApp
 end
 
-local function zoomFindShareToolbar()
-    return _zsShareToolbarWindow
-end
-
 local function zoomFindAnnotatePanel()
     return _zsAnnotationPannelWindow
 end
@@ -211,7 +207,7 @@ end
 
 local function zoomShareToolbarClickAnnotate()
     local annotateOffset = { x = -128, y = 30 }
-    clickPoint(pointFromOffset(zoomFindShareToolbar():frame(), annotateOffset))
+    clickPoint(pointFromOffset(_zsShareToolbarWindow:frame(), annotateOffset))
 end
 
 local function zoomAnnotatePanelClickClear()
