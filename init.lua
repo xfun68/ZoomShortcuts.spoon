@@ -237,15 +237,6 @@ local function zoomAssertInSharing()
     end
 end
 
-local function zoomAssertInSharingAndThen(operations)
-    local opAssertInSharing = {name = 'ShareToolbar: assert present', action = zoomAssertInSharing}
-
-    local wrappedOps = {}
-    listPush(wrappedOps, opAssertInSharing)
-    listPushAll(wrappedOps, operations)
-    return wrappedOps
-end
-
 local function withPrecondition(precondition, operations)
     for i, operation in pairs(operations) do
         operation.precondition = precondition
