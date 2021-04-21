@@ -16,11 +16,15 @@ obj.license = 'https://en.wikipedia.org/wiki/Beerware#License'
 
 local zoomAppName = 'zoom.us'
 local zoomShareToolbarWindowTitle = 'zoom share toolbar window'
+local zoomShareMinibarWindowTitle = ''
+local zoomShareMinibarPopupMenuWindowTitle = ''
 local zoomAnnotationPanelTitle = 'annotation panel'
 local zoomAnnotationToolbarPopupMenuTitle = 'annotation toolbar popup menu'
 
 _zsZoomApp = nil
 _zsShareToolbarWindow = nil
+_zsShareMinibarWindow = nil
+_zsShareMinibarPopupMenuWindow = nil
 _zsAnnotationPannelWindow = nil
 _zsAnnotationToolbarPopupMenuWindow = nil
 
@@ -314,6 +318,16 @@ local function isWindowShareToolbar(window)
     return  window:title() == zoomShareToolbarWindowTitle
 end
 
+local function isWindowShareMinibar(window)
+    return  window:title() == zoomShareMinibarWindowTitle
+        and window:size().h < 30
+end
+
+local function isWindowShareMinibarPopupMenu(window)
+    return  window:title() == zoomShareMinibarPopupMenuWindowTitle
+        and window:size().h > 100
+end
+
 local function isWindowAnnotatePanel(window)
     return  window:title() == zoomAnnotationPanelTitle
 end
@@ -343,6 +357,8 @@ function obj:init()
 
     _zsWindowFilter = hs.window.filter.new(function (window)
         return isWindowShareToolbar(window)
+            or isWindowShareMinibar(window)
+            or isWindowShareMinibarPopupMenu(window)
             or isWindowAnnotatePanel(window)
             or isWindowAnnotateToolbarPopupMenu(window)
     end)
@@ -354,6 +370,12 @@ function obj:start()
     local function bindWindow(window, appName)
         if isWindowShareToolbar(window) then
             _zsShareToolbarWindow = window
+        end
+        if isWindowShareMinibar(window) then
+            _zsShareMinibarWindow = window
+        end
+        if isWindowShareMinibarPopupMenu(window) then
+            _zsShareMinibarPopupMenuWindow = window
         end
         if isWindowAnnotatePanel(window) then
             _zsAnnotationPannelWindow = window
