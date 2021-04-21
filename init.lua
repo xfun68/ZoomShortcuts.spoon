@@ -250,12 +250,6 @@ local function wrapWithConditions(precondition, operations, postcondition)
     return operations
 end
 
-local zoomOpAnnotatePanelClickClear = {
-    name = 'AnnotatePanel: click Clear',
-    action = zoomAnnotatePanelClickClear,
-    predicate = zoomFindAnnotatePopupMenu
-}
-
 local zoomOpAnnotatePanelClickSave = {
     name = 'AnnotatePanel: click Save',
     action = zoomAnnotatePanelClickSave
@@ -292,6 +286,16 @@ local function opsToEnsureAnnotatePanelClosed()
         opsToClickAnnotateButton(),
         zoomAnnotatePanelIsOff
     )
+end
+
+local function opsAnnotatePanelClickClear()
+    return {
+        {
+            name = 'AnnotatePanel: click Clear',
+            action = zoomAnnotatePanelClickClear,
+            predicate = zoomFindAnnotatePopupMenu
+        }
+    }
 end
 
 local function opsToShowAnnotateStatus()
@@ -387,7 +391,7 @@ end
 function obj:zoomAnnotateClearAllDrawings()
     local operations = { opAssertInSharing() }
     listPushAll(operations, opsToEnsureAnnotatePanelOpen())
-    listPushAll(operations, { zoomOpAnnotatePanelClickClear })
+    listPushAll(operations, opsAnnotatePanelClickClear())
     listPushAll(operations, { zoomOpAnnotatePopupMenuSelectClearAllDrawings })
     listPushAll(operations, withPrecondition(
         needToRestoreAnnotatePanelFn(zoomFindAnnotatePanel()),
