@@ -119,8 +119,18 @@ local function execOperationAsync(operations, index)
         return
     end
 
+    local function postcondition()
+        if operations[index].skipOnFailedPrecondition then
+            return true
+        end
+        if operations[index].predicate then
+            return operations[index].predicate()
+        end
+        return true
+    end
+
     local timer = hs.timer.waitUntil(
-        operations[index].predicate or function () return true end,
+        postcondition,
         function () execOperationAsync(operations, index + 1) end,
         0.1)
 
@@ -285,6 +295,7 @@ local function opsToClickAnnotateButton()
         return {
             {
                 name = 'ShareMiniBar: click ViewOptions',
+                skipOnFailedPrecondition = true,
                 action = zoomShareMinibarClickViewOptions,
                 predicate = zoomShareMinibarPopupMenuIsOn
             },
