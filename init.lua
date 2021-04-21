@@ -267,14 +267,14 @@ local zoomOpEnsureAnnotatePanelOpen = {
     name = 'ShareToolbar: ensure annotate panel open',
     precondition = zoomAnnotatePanelIsOff,
     action = zoomShareToolbarClickAnnotate,
-    predicate = zoomFindAnnotatePanel
+    predicate = zoomAnnotatePanelIsOn
 }
 
 local zoomOpEnsureAnnotatePanelClosed = {
     name = 'ShareToolbar: ensure annotate panel closed',
     precondition = zoomAnnotatePanelIsOn,
     action = zoomShareToolbarClickAnnotate,
-    predicate = function () return not zoomFindAnnotatePanel() end
+    predicate = zoomAnnotatePanelIsOff
 }
 
 local zoomOpShareToolbarClickAnnotate = {
