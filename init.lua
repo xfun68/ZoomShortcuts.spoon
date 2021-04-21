@@ -79,6 +79,7 @@ end
 local function stopTimerFn(timer, target)
     return function()
         -- _zsLog.e('stop timer for "'..target..'": '..hs.inspect(timer))
+        _zsLog.i('postcondition checking timeout for operation: '..target)
         timer:stop()
     end
 end
@@ -107,7 +108,7 @@ end
 local function execOperationAsync(operations, index)
     index = index or 1
     local operationName = operations[index].name
-    -- _zsLog.d('execute operations['..index..']: '..operationName)
+    _zsLog.i('execute operations['..index..']: '..operationName)
 
     if not operations[index].precondition or operations[index].precondition() then
         operations[index].action()
