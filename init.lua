@@ -235,18 +235,6 @@ local function zoomAnnotatePopupMenuClickClearAllDrawings()
     clickPoint(pointFromOffset(zoomFindAnnotatePopupMenu():frame(), clearAllDrawingsOffset))
 end
 
-local function zoomWrapOpsWithinAnnotatePanel(operations)
-    local isAnnotateOriginalyOn = zoomFindAnnotatePanel()
-    local ensureAnnotatePanelOpen = {name = 'Ensure Annotate Panel Open', action = zoomShareToolbarClickAnnotateFn(isAnnotateOriginalyOn), predicate = zoomFindAnnotatePanel}
-    local restoreAnnotatePanel = {name = 'Restore Annotate Panel', action = zoomRestoreAnnoatePanelFn(isAnnotateOriginalyOn)}
-
-    local wrappedOps = {}
-    listPush(wrappedOps, ensureAnnotatePanelOpen)
-    listPushAll(wrappedOps, operations)
-    listPush(wrappedOps, restoreAnnotatePanel)
-    return wrappedOps
-end
-
 local function zoomAssertInSharing()
     if not zoomFindShareToolbar() then
         local message = 'Please ensure you are in meeting and sharing something.'
@@ -267,6 +255,11 @@ end
 local zoomOpShowAnnotateStatus = {
     name = 'Zoom: show Annotate status',
     action = zoomShowAnnotateStatus
+}
+
+local zoomOpAssertInSharing = {
+    name = 'ShareToolbar: assert present',
+    action = zoomAssertInSharing
 }
 
 local zoomOpEnsureAnnotatePanelOpen = {
@@ -368,44 +361,53 @@ function obj:stop()
 end
 
 function obj:zoomAnnotateToggle()
-    zoomExecuteOperations('Zoom Toggle Annotate',
-        zoomAssertInSharingAndThen({
-            zoomOpShareToolbarClickAnnotate,
-            zoomOpShowAnnotateStatus
-    }))
+    local operations = { zoomOpAssertInSharing }
+    listPushAll(operations, { zoomOpShareToolbarClickAnnotate })
+    listPushAll(operations, { zoomOpShowAnnotateStatus })
+    zoomExecuteOperations('Zoom Toggle Annotate', operations)
 end
 
 function obj:zoomAnnotateTurnOn()
-    zoomExecuteOperations('Zoom Turn On Annotate',
-        zoomAssertInSharingAndThen({
-            zoomOpEnsureAnnotatePanelOpen,
-            zoomOpShowAnnotateStatus
-    }))
+    local operations = { zoomOpAssertInSharing }
+    listPushAll(operations, { zoomOpEnsureAnnotatePanelOpen })
+    listPushAll(operations, { zoomOpShowAnnotateStatus })
+    zoomExecuteOperations('Zoom Turn On Annotate', operations)
 end
 
 function obj:zoomAnnotateTurnOff()
-    zoomExecuteOperations('Zoom Turn Off Annotate',
-        zoomAssertInSharingAndThen({
-            zoomOpEnsureAnnotatePanelClosed,
-            zoomOpShowAnnotateStatus
-    }))
+    local operations = { zoomOpAssertInSharing }
+    listPushAll(operations, { zoomOpEnsureAnnotatePanelClosed })
+    listPushAll(operations, { zoomOpShowAnnotateStatus })
+    zoomExecuteOperations('Zoom Turn Off Annotate', operations)
 end
 
 function obj:zoomAnnotateClearAllDrawings()
-    zoomExecuteOperations('Zoom ClearAllDrawings',
-        zoomAssertInSharingAndThen(
-            zoomWrapOpsWithinAnnotatePanel({
-                zoomOpAnnotatePanelClickClear,
-                zoomOpAnnotatePopupMenuSelectClearAllDrawings
-    })))
+    local isAnnotateOriginalyOn = zoomFindAnnotatePanel()
+    local restoreAnnotatePanel = {
+        name = 'Restore Annotate Panel',
+        action = zoomRestoreAnnoatePanelFn(isAnnotateOriginalyOn)
+    }
+
+    local operations = { zoomOpAssertInSharing }
+    listPushAll(operations, { zoomOpEnsureAnnotatePanelOpen })
+    listPushAll(operations, { zoomOpAnnotatePanelClickClear })
+    listPushAll(operations, { zoomOpAnnotatePopupMenuSelectClearAllDrawings })
+    listPushAll(operations, { restoreAnnotatePanel })
+    zoomExecuteOperations('Zoom ClearAllDrawings', operations)
 end
 
 function obj:zoomAnnotateSave()
-    zoomExecuteOperations('Zoom Save Annotate',
-        zoomAssertInSharingAndThen(
-            zoomWrapOpsWithinAnnotatePanel({
-                zoomOpAnnotatePanelClickSave
-    })))
+    local isAnnotateOriginalyOn = zoomFindAnnotatePanel()
+    local restoreAnnotatePanel = {
+        name = 'Restore Annotate Panel',
+        action = zoomRestoreAnnoatePanelFn(isAnnotateOriginalyOn)
+    }
+
+    local operations = { zoomOpAssertInSharing }
+    listPushAll(operations, { zoomOpEnsureAnnotatePanelOpen })
+    listPushAll(operations, { zoomOpAnnotatePanelClickSave })
+    listPushAll(operations, { restoreAnnotatePanel })
+    zoomExecuteOperations('Zoom Save Annotate', operations)
 end
 
 function obj:bindHotKeys(mapping)
