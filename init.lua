@@ -249,7 +249,7 @@ local function wrapWithConditions(precondition, operations, postcondition)
 end
 
 local function opAssertInSharing()
-    return { name = 'ShareToolbar: assert present', action = zoomAssertInSharing }
+    return { name = 'assert in sharing', action = zoomAssertInSharing }
 end
 
 local function opsToClickAnnotateButton()
