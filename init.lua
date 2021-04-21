@@ -336,6 +336,36 @@ local function isWindowAnnotateToolbarPopupMenu(window)
     return  window:title() == zoomAnnotationToolbarPopupMenuTitle
 end
 
+local function bindWindow(window, appName)
+    if isWindowShareToolbar(window) then
+        _zsShareToolbarWindow = window
+    end
+    if isWindowShareMinibar(window) then
+        _zsShareMinibarWindow = window
+    end
+    if isWindowShareMinibarPopupMenu(window) then
+        _zsShareMinibarPopupMenuWindow = window
+    end
+    if isWindowAnnotatePanel(window) then
+        _zsAnnotationPannelWindow = window
+    end
+    if isWindowAnnotateToolbarPopupMenu(window) then
+        _zsAnnotationToolbarPopupMenuWindow = window
+    end
+end
+
+local function unbindWindow(window, appName)
+    if _zsShareToolbarWindow and _zsShareToolbarWindow:id() == window:id() then
+        _zsShareToolbarWindow = nil
+    end
+    if _zsAnnotationPannelWindow and (_zsAnnotationPannelWindow:id() == window:id()) then
+        _zsAnnotationPannelWindow = nil
+    end
+    if _zsAnnotationToolbarPopupMenuWindow and (_zsAnnotationToolbarPopupMenuWindow:id() == window:id()) then
+        _zsAnnotationToolbarPopupMenuWindow = nil
+    end
+end
+
 local _zsZoomAppWatcher = nil
 
 function obj:init()
@@ -366,37 +396,6 @@ end
 
 function obj:start()
     _zsZoomAppWatcher:start()
-
-    local function bindWindow(window, appName)
-        if isWindowShareToolbar(window) then
-            _zsShareToolbarWindow = window
-        end
-        if isWindowShareMinibar(window) then
-            _zsShareMinibarWindow = window
-        end
-        if isWindowShareMinibarPopupMenu(window) then
-            _zsShareMinibarPopupMenuWindow = window
-        end
-        if isWindowAnnotatePanel(window) then
-            _zsAnnotationPannelWindow = window
-        end
-        if isWindowAnnotateToolbarPopupMenu(window) then
-            _zsAnnotationToolbarPopupMenuWindow = window
-        end
-    end
-
-    local function unbindWindow(window, appName)
-        if _zsShareToolbarWindow and _zsShareToolbarWindow:id() == window:id() then
-            _zsShareToolbarWindow = nil
-        end
-        if _zsAnnotationPannelWindow and (_zsAnnotationPannelWindow:id() == window:id()) then
-            _zsAnnotationPannelWindow = nil
-        end
-        if _zsAnnotationToolbarPopupMenuWindow and (_zsAnnotationToolbarPopupMenuWindow:id() == window:id()) then
-            _zsAnnotationToolbarPopupMenuWindow = nil
-        end
-    end
-
     _zsWindowFilter:subscribe(hs.window.filter.windowCreated, bindWindow)
     _zsWindowFilter:subscribe(hs.window.filter.windowDestroyed, unbindWindow)
 end
