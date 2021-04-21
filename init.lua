@@ -358,6 +358,12 @@ local function unbindWindow(window, appName)
     if _zsShareToolbarWindow and _zsShareToolbarWindow:id() == window:id() then
         _zsShareToolbarWindow = nil
     end
+    if _zsShareMinibarWindow and _zsShareMinibarWindow:id() == window:id() then
+        _zsShareMinibarWindow = nil
+    end
+    if _zsShareMinibarPopupMenuWindow and _zsShareMinibarPopupMenuWindow:id() == window:id() then
+        _zsShareMinibarPopupMenuWindow = nil
+    end
     if _zsAnnotationPannelWindow and (_zsAnnotationPannelWindow:id() == window:id()) then
         _zsAnnotationPannelWindow = nil
     end
