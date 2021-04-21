@@ -259,11 +259,6 @@ local function wrapWithConditions(precondition, operations, postcondition)
     return operations
 end
 
-local zoomOpAssertInSharing = {
-    name = 'ShareToolbar: assert present',
-    action = zoomAssertInSharing
-}
-
 local zoomOpAnnotatePanelClickClear = {
     name = 'AnnotatePanel: click Clear',
     action = zoomAnnotatePanelClickClear,
@@ -279,6 +274,10 @@ local zoomOpAnnotatePopupMenuSelectClearAllDrawings = {
     name = 'AnnotatePopupMenu: select Clear All Drawings',
     action = zoomAnnotatePopupMenuClickClearAllDrawings
 }
+
+local function opAssertInSharing()
+    return { name = 'ShareToolbar: assert present', action = zoomAssertInSharing }
+end
 
 local function opsToClickAnnotateButton()
     local operation = {
@@ -374,28 +373,28 @@ function obj:stop()
 end
 
 function obj:zoomAnnotateToggle()
-    local operations = { zoomOpAssertInSharing }
+    local operations = { opAssertInSharing() }
     listPushAll(operations, opsToClickAnnotateButton())
     listPushAll(operations, opsToShowAnnotateStatus())
     zoomExecuteOperations('Zoom Toggle Annotate', operations)
 end
 
 function obj:zoomAnnotateTurnOn()
-    local operations = { zoomOpAssertInSharing }
+    local operations = { opAssertInSharing() }
     listPushAll(operations, opsToEnsureAnnotatePanelOpen())
     listPushAll(operations, opsToShowAnnotateStatus())
     zoomExecuteOperations('Zoom Turn On Annotate', operations)
 end
 
 function obj:zoomAnnotateTurnOff()
-    local operations = { zoomOpAssertInSharing }
+    local operations = { opAssertInSharing() }
     listPushAll(operations, opsToEnsureAnnotatePanelClosed())
     listPushAll(operations, opsToShowAnnotateStatus())
     zoomExecuteOperations('Zoom Turn Off Annotate', operations)
 end
 
 function obj:zoomAnnotateClearAllDrawings()
-    local operations = { zoomOpAssertInSharing }
+    local operations = { opAssertInSharing() }
     listPushAll(operations, opsToEnsureAnnotatePanelOpen())
     listPushAll(operations, { zoomOpAnnotatePanelClickClear })
     listPushAll(operations, { zoomOpAnnotatePopupMenuSelectClearAllDrawings })
@@ -406,7 +405,7 @@ function obj:zoomAnnotateClearAllDrawings()
 end
 
 function obj:zoomAnnotateSave()
-    local operations = { zoomOpAssertInSharing }
+    local operations = { opAssertInSharing() }
     listPushAll(operations, opsToEnsureAnnotatePanelOpen())
     listPushAll(operations, { zoomOpAnnotatePanelClickSave })
     listPushAll(operations, withPrecondition(
