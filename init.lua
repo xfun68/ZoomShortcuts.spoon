@@ -230,11 +230,13 @@ local function zoomAnnotatePopupMenuClickClearAllDrawings()
 end
 
 local function zoomAssertInSharing()
-    if not zoomFindShareToolbar() then
-        local message = 'Please ensure you are in meeting and sharing something.'
-        hs.alert(message, 4)
-        error(message)
+    if _zsShareToolbarWindow then
+        return
     end
+
+    local message = 'Please ensure you are in meeting and sharing something.'
+    hs.alert(message, 4)
+    error(message)
 end
 
 local function withPrecondition(precondition, operations)
