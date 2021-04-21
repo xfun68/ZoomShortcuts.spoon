@@ -184,6 +184,14 @@ local function zoomAnnotatePanelIsOff()
     return not _zsAnnotationPannelWindow
 end
 
+local function zoomShareMinibarPopupMenuIsOn()
+    return _zsShareMinibarPopupMenuWindow
+end
+
+local function zoomShareMinibarPopupMenuIsOff()
+    return not _zsShareMinibarPopupMenuWindow
+end
+
 local function needToRestoreAnnotatePanelFn(isAnnotateOriginalyOn)
     return function ()
         if isAnnotateOriginalyOn then
@@ -214,6 +222,16 @@ local function zoomShareToolbarClickAnnotate()
     clickPoint(pointFromOffset(_zsShareToolbarWindow:frame(), annotateOffset))
 end
 
+local function zoomShareMinibarClickViewOptions()
+    local offset = { x = -38, y = 11 }
+    clickPoint(pointFromOffset(_zsShareMinibarWindow:frame(), offset))
+end
+
+local function zoomShareMinibarPopupMenuClickAnnotate()
+    local offset = { x = 60, y = 206 }
+    clickPoint(pointFromOffset(_zsShareMinibarPopupMenuWindow:frame(), offset))
+end
+
 local function zoomAnnotatePanelClickClear()
     local clearOffset = { x = -90, y = 30 }
     clickPoint(pointFromOffset(zoomFindAnnotatePanel():frame(), clearOffset))
@@ -230,7 +248,7 @@ local function zoomAnnotatePopupMenuClickClearAllDrawings()
 end
 
 local function zoomAssertInSharing()
-    if _zsShareToolbarWindow then
+    if _zsShareToolbarWindow or _zsShareMinibarWindow then
         return
     end
 
@@ -257,11 +275,28 @@ local function opAssertInSharing()
 end
 
 local function opsToClickAnnotateButton()
-    local operation = {
-        name = 'ShareToolbar: click Annotate',
-        action = zoomShareToolbarClickAnnotate
-    }
-    return { operation }
+    if _zsShareToolbarWindow then
+        return {
+            { name = 'ShareToolbar: click Annotate', action = zoomShareToolbarClickAnnotate }
+        }
+    elseif _zsShareMinibarWindow then
+        return {
+            {
+                name = 'ShareMiniBar: click ViewOptions',
+                action = zoomShareMinibarClickViewOptions,
+                predicate = zoomShareMinibarPopupMenuIsOn
+            },
+            {
+                name = 'ShareMiniBarPopUpMenu: click Annotate',
+                precondition = zoomShareMinibarPopupMenuIsOn,
+                action = zoomShareMinibarPopupMenuClickAnnotate
+            }
+        }
+    else
+        local message = 'No one is sharing!'
+        hs.alert(message, 4)
+        error(message)
+    end
 end
 
 local function opsToEnsureAnnotatePanelOpen()
