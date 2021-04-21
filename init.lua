@@ -259,11 +259,6 @@ local function wrapWithConditions(precondition, operations, postcondition)
     return operations
 end
 
-local zoomOpShowAnnotateStatus = {
-    name = 'Zoom: show Annotate status',
-    action = zoomShowAnnotateStatus
-}
-
 local zoomOpAssertInSharing = {
     name = 'ShareToolbar: assert present',
     action = zoomAssertInSharing
@@ -307,6 +302,12 @@ local function opsToEnsureAnnotatePanelClosed()
         opsToClickAnnotateButton(),
         zoomAnnotatePanelIsOff
     )
+end
+
+local function opsToShowAnnotateStatus()
+    return {
+        { name = 'Zoom: show Annotate status', action = zoomShowAnnotateStatus }
+    }
 end
 
 local _zsZoomAppWatcher = nil
@@ -375,21 +376,21 @@ end
 function obj:zoomAnnotateToggle()
     local operations = { zoomOpAssertInSharing }
     listPushAll(operations, opsToClickAnnotateButton())
-    listPushAll(operations, { zoomOpShowAnnotateStatus })
+    listPushAll(operations, opsToShowAnnotateStatus())
     zoomExecuteOperations('Zoom Toggle Annotate', operations)
 end
 
 function obj:zoomAnnotateTurnOn()
     local operations = { zoomOpAssertInSharing }
     listPushAll(operations, opsToEnsureAnnotatePanelOpen())
-    listPushAll(operations, { zoomOpShowAnnotateStatus })
+    listPushAll(operations, opsToShowAnnotateStatus())
     zoomExecuteOperations('Zoom Turn On Annotate', operations)
 end
 
 function obj:zoomAnnotateTurnOff()
     local operations = { zoomOpAssertInSharing }
     listPushAll(operations, opsToEnsureAnnotatePanelClosed())
-    listPushAll(operations, { zoomOpShowAnnotateStatus })
+    listPushAll(operations, opsToShowAnnotateStatus())
     zoomExecuteOperations('Zoom Turn Off Annotate', operations)
 end
 
