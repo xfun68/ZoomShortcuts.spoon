@@ -28,7 +28,7 @@ _zsShareMinibarPopupMenuWindow = nil
 _zsAnnotationPannelWindow = nil
 _zsAnnotationToolbarPopupMenuWindow = nil
 
--- _zsLog = hs.logger.new('ZoomShortcuts','debug')
+_zsLog = hs.logger.new('ZoomShortcuts','info')
 
 local function listPrint(list)
     list = list or {}
@@ -111,6 +111,8 @@ local function execOperationAsync(operations, index)
 
     if not operations[index].precondition or operations[index].precondition() then
         operations[index].action()
+    else
+        _zsLog.i('precondition not satisfied, skip action of operation: '..operationName)
     end
 
     if index == #operations then
