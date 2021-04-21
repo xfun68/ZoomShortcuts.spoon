@@ -310,6 +310,18 @@ local function opsToShowAnnotateStatus()
     }
 end
 
+local function isWindowShareToolbar(window)
+    return  window:title() == zoomShareToolbarWindowTitle
+end
+
+local function isWindowAnnotatePanel(window)
+    return  window:title() == zoomAnnotationPanelTitle
+end
+
+local function isWindowAnnotateToolbarPopupMenu(window)
+    return  window:title() == zoomAnnotationToolbarPopupMenuTitle
+end
+
 local _zsZoomAppWatcher = nil
 
 function obj:init()
@@ -330,7 +342,9 @@ function obj:init()
     end)
 
     _zsWindowFilter = hs.window.filter.new(function (window)
-        return window:title() == zoomShareToolbarWindowTitle or window:title() == zoomAnnotationPanelTitle or window:title() == zoomAnnotationToolbarPopupMenuTitle
+        return isWindowShareToolbar(window)
+            or isWindowAnnotatePanel(window)
+            or isWindowAnnotateToolbarPopupMenu(window)
     end)
 end
 
@@ -338,13 +352,13 @@ function obj:start()
     _zsZoomAppWatcher:start()
 
     local function bindWindow(window, appName)
-        if window:title() == zoomShareToolbarWindowTitle then
+        if isWindowShareToolbar(window) then
             _zsShareToolbarWindow = window
         end
-        if window:title() == zoomAnnotationPanelTitle then
+        if isWindowAnnotatePanel(window) then
             _zsAnnotationPannelWindow = window
         end
-        if window:title() == zoomAnnotationToolbarPopupMenuTitle then
+        if isWindowAnnotateToolbarPopupMenu(window) then
             _zsAnnotationToolbarPopupMenuWindow = window
         end
     end
